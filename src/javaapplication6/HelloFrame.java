@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import javax.swing.DefaultListModel;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
@@ -17,6 +18,8 @@ import javax.swing.DefaultListModel;
 public class HelloFrame extends javax.swing.JFrame {
     DefaultListModel studentList;
     DefaultListModel lessonList;
+    DefaultTableModel dtm;
+    DefaultTableModel clear;
     
     Map<Lesson,ArrayList<Student>> hashmap;
     
@@ -33,8 +36,27 @@ public class HelloFrame extends javax.swing.JFrame {
         hashmap = new HashMap<>();
         studentAList = new ArrayList<>();
         lessonAList = new ArrayList<>();
+        dtm = new DefaultTableModel();
+        dtm.addColumn("No");
+        dtm.addColumn("isim");
+        dtm.addColumn("soyisim");
+        jTable1.setModel(dtm);
+        initData();
     }
 
+    private void initData(){
+        for (int i = 0; i < 3; i++) {
+            lessonList.addElement(new Lesson("123"+i, "ders"+i, "hoca"+i));
+            lessonAList.add(new Lesson("123"+i, "ders"+i, "hoca"+i));  
+        }
+        for (int i = 0; i < 5; i++) {
+            studentList.addElement(new Student("1"+i, "isim" + i, "soyad"+ i));
+            studentAList.add(new Student("1"+i, "isim" + i, "soyad"+ i));
+        }
+        jStudentList.setModel(studentList);
+        jLessonList.setModel(lessonList);
+    }
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -135,6 +157,11 @@ public class HelloFrame extends javax.swing.JFrame {
         jScrollPane2.setViewportView(jStudentList);
 
         jButton4.setText("Dersi Alan Öğrencileri listele");
+        jButton4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton4ActionPerformed(evt);
+            }
+        });
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -318,12 +345,18 @@ public class HelloFrame extends javax.swing.JFrame {
     private void addLessonToStudentActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addLessonToStudentActionPerformed
         // TODO add your handling code here:
         // arraylistimizde problem var add diyince ekleyelim yeni list oluştur.
-        
+        ArrayList<Student> studentListx;
+        if(hashmap.get(lessonAList.get(jLessonList.getSelectedIndex())) != null){
+            studentListx = hashmap.get(lessonAList.get(jLessonList.getSelectedIndex()));
+        }else{
+            studentListx = new ArrayList<>();
+        }
+        studentListx.add(studentAList.get(jStudentList.getSelectedIndex()));
         hashmap.put(
                 lessonAList.get(
                         jLessonList.getSelectedIndex()
                 ), 
-                studentAList
+                studentListx
         );
         
  
@@ -334,6 +367,8 @@ public class HelloFrame extends javax.swing.JFrame {
         Student s = new Student(studentNumber.getText(), studentName.getText(), studentLastname.getText());
         studentList.addElement(s);
         studentAList.add(s);
+        
+        
         jStudentList.setModel(studentList);
        
         
@@ -343,7 +378,22 @@ public class HelloFrame extends javax.swing.JFrame {
         // TODO add your handling code here:
         System.out.println(hashmap.toString());
         
+        
     }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+        // TODO add your handling code here:
+        ArrayList<Student> a = hashmap.get(lessonAList.get(jLessonList.getSelectedIndex()));
+         dtm = new DefaultTableModel();
+            dtm.addColumn("No");
+            dtm.addColumn("isim");
+            dtm.addColumn("soyisim");
+        for (int i = 0; i < a.size(); i++) {
+            dtm.addRow(new Object[]{a.get(i).number,a.get(i).name,a.get(i).lasname});
+        }
+        jTable1.setModel(dtm);
+        
+    }//GEN-LAST:event_jButton4ActionPerformed
 
     /**
      * @param args the command line arguments
